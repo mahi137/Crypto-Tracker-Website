@@ -6,49 +6,59 @@ import ComparePage from "./pages/compare";
 import WatchlistPage from "./pages/watchlist";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Footer from "./components/Common/Footer/footer";
 
 function App() {
-  var cursor;
-  var cursorPointer;
+  const cursorRef = useRef(null);
+  const cursorPointerRef = useRef(null);
 
   useEffect(() => {
-    cursor = document.getElementById("cursor");
-    cursorPointer = document.getElementById("cursor-pointer");
+    const cursor = cursorRef.current;
+    const cursorPointer = cursorPointerRef.current;
 
-    document.body.addEventListener("mousemove", function (e) {
-      return (
-        (cursor.style.left = e.clientX + "px"),
-        (cursor.style.top = e.clientY + "px"),
-        (cursorPointer.style.left = e.clientX + "px"),
-        (cursorPointer.style.top = e.clientY + "px")
-      );
-    });
+    const handleMouseMove = (e) => {
+      if (cursor && cursorPointer) {
+        cursor.style.left = e.clientX + "px";
+        cursor.style.top = e.clientY + "px";
+        cursorPointer.style.left = e.clientX + "px";
+        cursorPointer.style.top = e.clientY + "px";
+      }
+    };
 
-    document.body.addEventListener("mousedown", function (e) {
-      return (
-        (cursor.style.height = "0.5rem"),
-        (cursor.style.width = "0.5rem"),
-        (cursorPointer.style.height = "3rem"),
-        (cursorPointer.style.width = "3rem")
-      );
-    });
+    const handleMouseDown = () => {
+      if (cursor && cursorPointer) {
+        cursor.style.height = "0.5rem";
+        cursor.style.width = "0.5rem";
+        cursorPointer.style.height = "3rem";
+        cursorPointer.style.width = "3rem";
+      }
+    };
 
-    document.body.addEventListener("mouseup", function (e) {
-      return (
-        (cursor.style.height = "0.3rem"),
-        (cursor.style.width = "0.3rem"),
-        (cursorPointer.style.height = "2rem"),
-        (cursorPointer.style.width = "2rem")
-      );
-    });
+    const handleMouseUp = () => {
+      if (cursor && cursorPointer) {
+        cursor.style.height = "0.3rem";
+        cursor.style.width = "0.3rem";
+        cursorPointer.style.height = "2rem";
+        cursorPointer.style.width = "2rem";
+      }
+    };
+
+    document.body.addEventListener("mousemove", handleMouseMove);
+    document.body.addEventListener("mousedown", handleMouseDown);
+    document.body.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.body.removeEventListener("mousemove", handleMouseMove);
+      document.body.removeEventListener("mousedown", handleMouseDown);
+      document.body.removeEventListener("mouseup", handleMouseUp);
+    };
   }, []);
 
   return (
     <div className="App">
-      <div className="cursor" id="cursor" />
-      <div className="cursor-pointer" id="cursor-pointer" />
+      <div className="cursor" id="cursor" ref={cursorRef} />
+      <div className="cursor-pointer" id="cursor-pointer" ref={cursorPointerRef} />
       <ToastContainer />
       <BrowserRouter>
         <Routes>
